@@ -1,0 +1,27 @@
+<div id="video-call-container">
+    <div id="videos">
+        <video id="remote-video" autoplay playsinline></video>
+        <video id="local-video" autoplay playsinline muted></video>
+    </div>
+    <div id="controls">
+        <button id="create-invite">Create Invitation</button>
+        <button id="accept-invite" style="display: none;">Accept Invitation</button>
+        <div id="response-container" style="display: none;">
+            <input type="text" id="response-code" placeholder="Paste response code here" />
+            <button id="submit-response">Connect</button>
+        </div>
+        <div id="call-actions" style="display: none;">
+            <button id="mic-toggle">Mute</button>
+            <button id="cam-toggle">Cam Off</button>
+        </div>
+    </div>
+    <div id="toast-container"></div>
+    <div id="error-modal" style="display: none;">
+        <div id="error-content">
+            <p id="error-message"></p>
+            <button id="close-modal">Close</button>
+        </div>
+    </div>
+</div>
+
+<script src="../scripts/webrtc.ts"></script>

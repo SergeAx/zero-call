@@ -1,43 +1,55 @@
-# Astro Starter Kit: Minimal
+# Zero Call
 
-```sh
-bun create astro@latest -- --template minimal
-```
+A serverless, peer-to-peer WebRTC audio and video calling application.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+This project provides a simple and secure way to establish a direct video call
+with another person without any intermediary servers for the call itself. It
+uses a manual signaling process where an invitation link is generated and
+shared, and a response code is pasted back to finalize the connection.
 
-## 🚀 Project Structure
+## Tech Stack
 
-Inside of your Astro project, you'll see the following folders and files:
+-   **Framework**: [Astro](https://astro.build/)
+-   **Runtime/Bundler**: [Bun](https://bun.sh/)
+-   **Language**: 100% TypeScript
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+## How It Works
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+1.  **Create Invitation**: Open the site and click "Create Invitation." An
+    invitation link is copied to your clipboard.
+2.  **Share Link**: Send this link to the person you want to call.
+3.  **Accept Invitation**: The other person opens the link and clicks "Accept."
+    A response code is copied to their clipboard.
+4.  **Connect**: They send the response code back to you. Paste it into the
+    input field and click "Connect" to start the call.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## Develop and run locally
 
-Any static assets, like images, can be placed in the `public/` directory.
+1. Install [Bun runtime](https://bun.sh/).
+2. Install dependencies with `bun install`.
+3. Run dev server with `bun dev`.
 
-## 🧞 Commands
+## Deploy to production
 
-All commands are run from the root of the project, from a terminal:
+1. Build the bundle with `bun run build` (love the alliterations!).
+2. Upload the `/dist/index.html` file anywhere.
+3. You are breathtaking!
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `bun install`             | Installs dependencies                            |
-| `bun dev`             | Starts local dev server at `localhost:4321`      |
-| `bun build`           | Build your production site to `./dist/`          |
-| `bun preview`         | Preview your build locally, before deploying     |
-| `bun astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `bun astro -- --help` | Get help using the Astro CLI                     |
+## Roadmap
 
-## 👀 Want to learn more?
+* I10n
+* Dynamic STUN servers list from https://github.com/pradt2/always-online-stun
+* Use [Short SDP](https://github.com/ntsd/sdp-compact)
+* QR codes for invitation and response
+* Change/blur background using https://ai.google.dev/edge/mediapipe/
+* Add chat
+* Add file exchange
+* Add E2E encryption
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+## Kudos
+
+The core idea is inspired by [Zero share](https://github.com/ntsd/zero-share).
+
+## License
+
+This is free (as in "freedom") [MIT licensed](./LICENSE) open-source software.
