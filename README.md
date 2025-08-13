@@ -7,6 +7,9 @@ with another person without any intermediary servers for the call itself. It
 uses a manual signaling process where an invitation link is generated and
 shared, and a response code is pasted back to finalize the connection.
 
+And in case you are wondering if the pun is intended — yes, it is. Hack the
+planet!
+
 ## Tech Stack
 
 -   **Framework**: [Astro](https://astro.build/)
@@ -32,7 +35,7 @@ shared, and a response code is pasted back to finalize the connection.
 ## Deploy to production
 
 1. Build the bundle with `bun run build` (love the alliterations!).
-2. Upload the `/dist/index.html` file anywhere.
+2. Upload the `/dist/*` files anywhere.
 3. You are breathtaking!
 
 ## Roadmap

@@ -1,0 +1,54 @@
+---
+// Language selector component that uses the global i18n system
+---
+
+<div class="lang-control" aria-label="Language selector">
+  <span class="globe" aria-hidden="true" title="Language">🌐</span>
+  <select id="language-select" aria-label="Language">
+    <!-- Options will be populated dynamically -->
+  </select>
+</div>
+
+<script>
+  // Wait for i18n system to be ready
+  function initLanguageSelector() {
+    const select = document.getElementById('language-select');
+    if (!select || !window.ZeroCallI18n) return;
+    
+    // Populate options dynamically from supported locales
+    const supportedLocales = window.ZeroCallI18n.getSupportedLocales();
+    supportedLocales.forEach(locale => {
+      const option = document.createElement('option');
+      option.value = locale.code;
+      option.textContent = locale.label;
+      select.appendChild(option);
+    });
+    
+    // Set initial value
+    select.value = window.ZeroCallI18n.getCurrentLocale();
+    
+    // Handle changes
+    select.addEventListener('change', async function() {
+      const newLocale = select.value;
+      try {
+        await window.ZeroCallI18n.setLocale(newLocale);
+      } catch (error) {
+        console.error('Failed to set locale:', error);
+        // Revert to previous value on error
+        select.value = window.ZeroCallI18n.getCurrentLocale();
+      }
+    });
+    
+    // Update on locale change
+    window.ZeroCallI18n.onLocaleChange(function() {
+      select.value = window.ZeroCallI18n.getCurrentLocale();
+    });
+  }
+  
+  // Initialize when i18n is ready
+  if (window.ZeroCallI18n) {
+    initLanguageSelector();
+  } else {
+    document.addEventListener('i18n-ready', initLanguageSelector, { once: true });
+  }
+</script>

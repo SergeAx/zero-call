@@ -48,6 +48,12 @@ main {
     transform: scaleX(-1);
 }
 
+/* In RTL, mirror the placement to top-left to follow reading direction */
+:root[dir="rtl"] #local-video {
+    right: auto;
+    left: 20px;
+}
+
 #controls {
     position: absolute;
     top: 20px;
@@ -151,5 +157,54 @@ input[type="text"] {
 .toast.fade-out {
     opacity: 0;
     transform: translateX(100%);
+}
+
+/* Language selector control (bottom-left to avoid conflict with local preview at top-right) */
+.lang-control {
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 3000;
+    background: rgba(0,0,0,0.5);
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid #333;
+    backdrop-filter: blur(4px);
+}
+
+.lang-control .globe {
+    font-size: 18px;
+    line-height: 1;
+}
+
+.lang-control select {
+    background: #222;
+    color: #fff;
+    border: 1px solid #444;
+    border-radius: 4px;
+    outline: none;
+    font-size: 14px;
+    padding: 4px 8px;
+    cursor: pointer;
+}
+
+.lang-control select:hover {
+    background: #333;
+    border-color: #555;
+}
+
+.lang-control select option {
+    background: #222;
+    color: #fff;
+    padding: 8px;
+}
+
+.lang-control select option:hover,
+.lang-control select option:checked {
+    background: #4CAF50;
+    color: #fff;
 }
 

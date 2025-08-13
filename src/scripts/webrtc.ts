@@ -1,3 +1,8 @@
+// Use global i18n system for static deployment
+const t = (key: string) => (window as any).ZeroCallI18n?.t(key) || key;
+const applyTranslations = () => (window as any).ZeroCallI18n?.applyTranslations();
+const onLocaleChange = (cb: () => void) => (window as any).ZeroCallI18n?.onLocaleChange(cb);
+
 const localVideo = document.getElementById('local-video') as HTMLVideoElement;
 const remoteVideo = document.getElementById('remote-video') as HTMLVideoElement;
 const createInviteBtn = document.getElementById('create-invite')! as HTMLButtonElement;
@@ -86,10 +91,10 @@ const createInvitation = async () => {
             const inviteUrl = `${window.location.origin}${window.location.pathname}?invite=${encodedOffer}`;
 
             navigator.clipboard.writeText(inviteUrl).then(() => {
-                showToast('Invitation link copied!');
+                showToast(t('invitation_link_copied'));
             }).catch(err => {
                 console.error('Could not copy link: ', err);
-                showError('Failed to copy link.');
+                showError(t('failed_to_copy_link'));
             });
 
 
@@ -99,7 +104,7 @@ const createInvitation = async () => {
         }
     } catch (error) {
         console.error(error);
-        showError('Failed to create invitation. See console for details.');
+        showError(t('failed_to_create_invitation'));
     }
 };
 
@@ -162,21 +167,21 @@ const acceptInvitation = async (encodedOffer: string) => {
                 const encodedResponse = btoa(JSON.stringify(finalAnswer));
 
                 navigator.clipboard.writeText(encodedResponse).then(() => {
-                    showToast('Response code copied!');
+                    showToast(t('response_code_copied'));
                 }).catch(err => {
                     console.error('Could not copy code: ', err);
-                    showError('Failed to copy response code.');
+                    showError(t('failed_to_copy_response_code'));
                 });
 
                 acceptInviteBtn.style.display = 'none';
                 const responseInfo = document.createElement('p');
-                responseInfo.textContent = 'Response code copied. Paste it back in the first tab.';
+                responseInfo.textContent = t('response_info_paste_back');
                 responseInfo.style.textAlign = 'center';
                 acceptInviteBtn.parentElement?.appendChild(responseInfo);
             }
         } catch (error) {
             console.error(error);
-            showError('Failed to accept invitation. See console for details.');
+            showError(t('failed_to_create_invitation'));
         }
     };
 };
@@ -186,9 +191,11 @@ const startLocalVideo = async () => {
         localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
         localVideo.srcObject = localStream;
         callActions.style.display = 'flex';
+        // set initial toggle labels according to current track states
+        updateToggleLabels();
     } catch (error) {
         console.error(error);
-        showError('Could not access camera/microphone. Please check browser permissions and try again.');
+        showError(t('no_media_access'));
     }
 };
 
@@ -203,7 +210,7 @@ const finalizeConnection = async () => {
         responseContainer.style.display = 'none';
     } catch (error) {
         console.error(error);
-        showError('Invalid response code.');
+        showError(t('invalid_response_code'));
     }
 };
 
@@ -212,6 +219,21 @@ const init = async () => {
     const inviteCode = urlParams.get('invite');
 
     closeModalBtn.addEventListener('click', closeError);
+
+    // Wait for i18n to be available, then apply translations
+    const initI18n = () => {
+        if ((window as any).ZeroCallI18n) {
+            applyTranslations();
+            onLocaleChange(() => {
+                applyTranslations();
+                updateToggleLabels();
+            });
+        } else {
+            // Retry in 100ms if i18n not ready yet
+            setTimeout(initI18n, 100);
+        }
+    };
+    initI18n();
 
     if (inviteCode) {
         acceptInvitation(inviteCode);
@@ -224,11 +246,27 @@ const init = async () => {
     }
 };
 
+const setMicLabel = (enabled: boolean) => {
+    micToggleBtn.textContent = enabled ? t('mic_off') : t('mic_on');
+};
+
+const setCamLabel = (enabled: boolean) => {
+    camToggleBtn.textContent = enabled ? t('cam_off') : t('cam_on');
+};
+
+const updateToggleLabels = () => {
+    if (!localStream) return;
+    const audioEnabled = localStream.getAudioTracks().some(tr => tr.enabled);
+    const videoEnabled = localStream.getVideoTracks().some(tr => tr.enabled);
+    setMicLabel(audioEnabled);
+    setCamLabel(videoEnabled);
+};
+
 const toggleMic = () => {
     if (!localStream) return;
     localStream.getAudioTracks().forEach(track => {
         track.enabled = !track.enabled;
-        micToggleBtn.textContent = track.enabled ? 'Mic Off' : 'Mic On';
+        setMicLabel(track.enabled);
     });
 };
 
@@ -236,7 +274,7 @@ const toggleCam = () => {
     if (!localStream) return;
     localStream.getVideoTracks().forEach(track => {
         track.enabled = !track.enabled;
-        camToggleBtn.textContent = track.enabled ? 'Cam Off' : 'Cam On';
+        setCamLabel(track.enabled);
     });
 };
 

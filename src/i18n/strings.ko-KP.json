@@ -1,0 +1,23 @@
+{
+  "create_invitation": "초청 만들기",
+  "accept_invitation": "초청 받기",
+  "paste_response_placeholder": "여기에 응답 코드를 붙여넣으십시오",
+  "connect": "연결",
+  "mic_on": "마이크 켜기",
+  "mic_off": "마이크 끄기",
+  "cam_on": "카메라 켜기",
+  "cam_off": "카메라 끄기",
+  "close": "닫기",
+  "invitation_link_copied": "초청 링크가 복사되었습니다!",
+  "failed_to_copy_link": "링크를 복사하지 못했습니다.",
+  "failed_to_create_invitation": "초청을 만들지 못했습니다. 자세한 내용은 콘솔을 확인하십시오.",
+  "response_code_copied": "응답 코드가 복사되었습니다!",
+  "failed_to_copy_response_code": "응답 코드를 복사하지 못했습니다.",
+  "response_info_paste_back": "응답 코드가 복사되었습니다. 초청한 사람에게 보내주십시오.",
+  "no_media_access": "카메라/마이크에 접근할 수 없습니다. 브라우저 권한을 확인한 후 다시 시도하십시오.",
+  "invalid_response_code": "유효하지 않은 응답 코드입니다.",
+  "camera_permission_denied": "카메라/마이크 접근이 거부되었습니다. 브라우저 권한을 확인한 후 다시 시도하십시오.",
+  "enter_response_code": "응답 코드를 입력하십시오.",
+  "connection_established": "연결이 성공적으로 설정되었습니다!",
+  "language": "언어"
+}

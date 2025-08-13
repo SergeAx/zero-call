@@ -1,5 +1,6 @@
 ---
 import VideoCall from '../components/VideoCall.astro';
+import LanguageSelector from '../components/LanguageSelector.astro';
 ---
 
 <html lang="en">
@@ -14,6 +15,34 @@ import VideoCall from '../components/VideoCall.astro';
 	<body>
 		<main>
 			<VideoCall />
+			<LanguageSelector />
 		</main>
+		
+		<script>
+			// Initialize i18n system before other scripts
+			import { initializeI18n } from '../scripts/i18n.ts';
+			
+			// Initialize i18n and make it globally available
+			initializeI18n().then(() => {
+				// Make i18n functions globally available for other scripts
+				const i18nModule = import('../scripts/i18n.ts');
+				i18nModule.then(module => {
+					(window as any).ZeroCallI18n = {
+						t: module.t,
+						setLocale: module.setLocale,
+						getCurrentLocale: module.getLocale,
+						getSupportedLocales: module.getSupportedLocales,
+						onLocaleChange: module.onLocaleChange,
+						applyTranslations: module.applyTranslations
+					};
+					
+					// Apply initial translations
+					module.applyTranslations();
+					
+					// Dispatch ready event
+					document.dispatchEvent(new CustomEvent('i18n-ready'));
+				});
+			}).catch(console.error);
+		</script>
 	</body>
 </html>

@@ -1,0 +1,23 @@
+{
+  "create_invitation": "Create Invitation",
+  "accept_invitation": "Accept Invitation",
+  "paste_response_placeholder": "Paste response code here",
+  "connect": "Connect",
+  "mic_on": "Mic On",
+  "mic_off": "Mic Off",
+  "cam_on": "Cam On",
+  "cam_off": "Cam Off",
+  "close": "Close",
+  "invitation_link_copied": "Invitation link copied!",
+  "failed_to_copy_link": "Failed to copy link.",
+  "failed_to_create_invitation": "Failed to create invitation. See console for details.",
+  "response_code_copied": "Response code copied!",
+  "failed_to_copy_response_code": "Failed to copy response code.",
+  "response_info_paste_back": "Response code copied. Send it back to the one who invited you.",
+  "no_media_access": "Could not access camera/microphone. Please check browser permissions and try again.",
+  "invalid_response_code": "Invalid response code.",
+  "camera_permission_denied": "Camera/microphone access denied. Please check browser permissions and try again.",
+  "enter_response_code": "Please enter a response code.",
+  "connection_established": "Connection established successfully!",
+  "language": "Language"
+}

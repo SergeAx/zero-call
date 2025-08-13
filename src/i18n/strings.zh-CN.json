@@ -1,0 +1,23 @@
+{
+  "create_invitation": "创建邀请",
+  "accept_invitation": "接受邀请",
+  "paste_response_placeholder": "在此粘贴回复代码",
+  "connect": "连接",
+  "mic_on": "打开麦克风",
+  "mic_off": "关闭麦克风",
+  "cam_on": "打开摄像头",
+  "cam_off": "关闭摄像头",
+  "close": "关闭",
+  "invitation_link_copied": "邀请链接已复制！",
+  "failed_to_copy_link": "复制链接失败。",
+  "failed_to_create_invitation": "创建邀请失败。详情见控制台。",
+  "response_code_copied": "回复代码已复制！",
+  "failed_to_copy_response_code": "复制回复代码失败。",
+  "response_info_paste_back": "回复代码已复制。请发送给邀请您的人。",
+  "no_media_access": "无法访问摄像头/麦克风。请检查浏览器权限后重试。",
+  "invalid_response_code": "无效的回复代码。",
+  "camera_permission_denied": "摄像头/麦克风访问被拒绝。请检查浏览器权限后重试。",
+  "enter_response_code": "请输入回复代码。",
+  "connection_established": "连接成功建立！",
+  "language": "语言"
+}

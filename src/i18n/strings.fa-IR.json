@@ -1,0 +1,23 @@
+{
+  "create_invitation": "ایجاد دعوتنامه",
+  "accept_invitation": "پذیرفتن دعوت",
+  "paste_response_placeholder": "کد پاسخ را اینجا بچسبانید",
+  "connect": "اتصال",
+  "mic_on": "روشن کردن میکروفون",
+  "mic_off": "خاموش کردن میکروفون",
+  "cam_on": "روشن کردن دوربین",
+  "cam_off": "خاموش کردن دوربین",
+  "close": "بستن",
+  "invitation_link_copied": "پیوند دعوت کپی شد!",
+  "failed_to_copy_link": "کپی پیوند ناموفق بود.",
+  "failed_to_create_invitation": "ایجاد دعوتنامه ناموفق بود. جزئیات در کنسول.",
+  "response_code_copied": "کد پاسخ کپی شد!",
+  "failed_to_copy_response_code": "کپی کد پاسخ ناموفق بود.",
+  "response_info_paste_back": "کد پاسخ کپی شد. آن را به کسی که شما را دعوت کرده ارسال کنید.",
+  "no_media_access": "دسترسی به دوربین/میکروفون ممکن نیست. لطفاً مجوزهای مرورگر را بررسی کرده و دوباره تلاش کنید.",
+  "invalid_response_code": "کد پاسخ نامعتبر است.",
+  "camera_permission_denied": "دسترسی به دوربین/میکروفون رد شد. لطفاً مجوزهای مرورگر را بررسی کرده و دوباره تلاش کنید.",
+  "enter_response_code": "لطفاً کد پاسخ را وارد کنید.",
+  "connection_established": "اتصال با موفقیت برقرار شد!",
+  "language": "زبان"
+}
