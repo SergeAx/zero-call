@@ -1,0 +1,136 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Triggers on version tags like v1.0.0, v2.1.3, etc.
+
+permissions:
+  contents: write  # Required for creating releases
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+          
+      - name: Install dependencies
+        run: bun install
+        
+      - name: Build application
+        run: bun run build
+        
+      - name: Create source archive
+        run: |
+          # Create source code archive (excluding node_modules, .git, etc.)
+          zip -r zero-call-source-${{ github.ref_name }}.zip . \
+            -x "node_modules/*" ".git/*" "dist/*" ".astro/*" "*.log" \
+            -x ".github/*" ".vscode/*"
+        
+      - name: Create distribution archive
+        run: |
+          # Create built application archive
+          cd dist
+          zip -r ../zero-call-dist-${{ github.ref_name }}.zip .
+          cd ..
+        
+      - name: Create self-contained archive
+        run: |
+          # Create a complete self-contained package
+          mkdir -p release-package
+          cp -r dist/* release-package/
+          cp README.md release-package/ 2>/dev/null || echo "README.md not found, skipping"
+          cp LICENSE release-package/ 2>/dev/null || echo "LICENSE not found, skipping"
+          
+          # Create a simple deployment guide
+          cat > release-package/DEPLOYMENT.md << 'EOF'
+          # Zero Call - Deployment Guide
+          
+          This is a static build of Zero Call, a WebRTC video calling application.
+          
+          ## Quick Start
+          
+          1. **Web Server**: Serve the contents of this folder using any web server
+          2. **Local Testing**: Open `index.html` in a modern web browser
+          3. **Custom Domain**: Configure your web server to serve from the domain root
+          
+          ## Deployment Options
+          
+          ### Static Hosting Services
+          - **Netlify**: Drag and drop this folder to Netlify
+          - **Vercel**: Upload this folder as a static site
+          - **GitHub Pages**: Upload contents to your repository
+          - **Cloudflare Pages**: Connect to your repository or upload directly
+          
+          ### Web Servers
+          - **Nginx**: Point document root to this folder
+          - **Apache**: Upload to your htdocs/public_html folder
+          - **IIS**: Deploy to your web application folder
+          
+          ## Requirements
+          
+          - Modern web browser with WebRTC support
+          - HTTPS connection (required for camera/microphone access)
+          - No server-side dependencies required
+          
+          ## Features
+          
+          - Peer-to-peer video calling
+          - Multi-language support
+          - No registration or accounts required
+          - Works entirely in the browser
+          
+          For more information, visit: https://zero-call.org
+          EOF
+          
+          cd release-package
+          zip -r ../zero-call-complete-${{ github.ref_name }}.zip .
+          cd ..
+        
+      - name: Extract version from tag
+        id: version
+        run: echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+        
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Zero Call ${{ steps.version.outputs.version }}
+          body: |
+            ## Zero Call ${{ steps.version.outputs.version }}
+            
+            A static WebRTC video calling application with no server dependencies.
+            
+            ### Downloads
+            
+            - **📦 Complete Package** (`zero-call-complete-*.zip`): Ready-to-deploy build with documentation
+            - **🌐 Distribution Only** (`zero-call-dist-*.zip`): Just the built application files
+            - **📝 Source Code** (`zero-call-source-*.zip`): Source code without dependencies
+            
+            ### Quick Deploy
+            
+            1. Download the **Complete Package**
+            2. Extract the ZIP file
+            3. Upload contents to any web server or static hosting service
+            4. Access via HTTPS (required for camera/microphone permissions)
+            
+            ### Features
+            
+            - 🎥 Peer-to-peer video calling
+            - 🌍 Multi-language support
+            - 🔒 No registration required
+            - 📱 Works on desktop and mobile
+            - ⚡ No server dependencies
+            
+            For detailed deployment instructions, see `DEPLOYMENT.md` in the complete package.
+          files: |
+            zero-call-complete-${{ github.ref_name }}.zip
+            zero-call-dist-${{ github.ref_name }}.zip
+            zero-call-source-${{ github.ref_name }}.zip
+          draft: false
+          prerelease: false

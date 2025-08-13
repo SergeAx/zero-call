@@ -40,14 +40,14 @@ planet!
 
 ## Roadmap
 
-* I10n
-* Dynamic STUN servers list from https://github.com/pradt2/always-online-stun
-* Use [Short SDP](https://github.com/ntsd/sdp-compact)
-* QR codes for invitation and response
-* Change/blur background using https://ai.google.dev/edge/mediapipe/
-* Add chat
-* Add file exchange
-* Add E2E encryption
+* [x] I10n
+* [ ] Use [Short SDP](https://github.com/ntsd/sdp-compact)
+* [ ] Dynamic STUN servers list from https://github.com/pradt2/always-online-stun
+* [ ] QR codes for invitation and response
+* [ ] Change/blur background using https://ai.google.dev/edge/mediapipe/
+* [ ] Add chat
+* [ ] Add file exchange
+* [ ] Add E2E encryption
 
 ## Kudos
 
