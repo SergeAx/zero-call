@@ -38,10 +38,14 @@ planet!
 2. Upload the `/dist/*` files anywhere.
 3. You are breathtaking!
 
+## Localization
+
+Сourtesy of [Weblate](https://weblate.org/en/)
+
 ## Roadmap
 
 * [x] I10n
-* [ ] Use [Short SDP](https://github.com/ntsd/sdp-compact)
+* [x] Use [Short SDP](https://github.com/ntsd/sdp-compact)
 * [ ] Dynamic STUN servers list from https://github.com/pradt2/always-online-stun
 * [ ] QR codes for invitation and response
 * [ ] Change/blur background using https://ai.google.dev/edge/mediapipe/
