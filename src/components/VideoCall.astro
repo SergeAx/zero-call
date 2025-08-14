@@ -25,6 +25,8 @@
 </div>
 
 <script>
+import { compact, decompact } from 'sdp-compact';
+
 // Use global i18n system for static deployment
 const t = (key: string) => (window as any).ZeroCallI18n?.t(key) || key;
 const applyTranslations = () => (window as any).ZeroCallI18n?.applyTranslations();
@@ -52,6 +54,135 @@ const configuration = {
     iceServers: [
         { urls: 'stun:stun.l.google.com:19302' }
     ]
+};
+
+// Helper functions for SDP compression
+const encodeSDP = (sessionDescription: RTCSessionDescription): string => {
+    console.log('encodeSDP called with:', sessionDescription.type);
+    
+    // Check if compact function is available
+    if (typeof compact === 'undefined') {
+        console.error('compact function is not available - import failed');
+        return btoa(JSON.stringify(sessionDescription));
+    }
+    
+    try {
+        // Use more conservative compression options to maintain WebRTC compatibility
+        const options = { 
+            compress: true,
+            mediaOptions: {
+                replaceCandidateString: false, // Don't replace candidate strings to avoid transport type issues
+                replaceMediaString: false, // Don't replace media strings
+                removeMediaID: false, // Keep media IDs
+                removeSetup: false, // Keep DTLS setup
+                forceTrickle: false, // Don't force trickle
+                compressFingerprint: true, // This should be safe
+                compressConnection: false // Don't compress connection info
+            }
+        };
+        
+        console.log('Attempting SDP compression...');
+        
+        // Use the compact function which works with RTCSessionDescriptionInit
+        const sessionDescInit = {
+            type: sessionDescription.type,
+            sdp: sessionDescription.sdp
+        };
+        
+        console.log('Calling compact() with:', sessionDescInit.type, 'SDP length:', sessionDescInit.sdp.length);
+        const compactedResult = compact(sessionDescInit, options);
+        
+        console.log('SDP Compression SUCCESS:');
+        console.log('Original length:', btoa(JSON.stringify(sessionDescription)).length);
+        console.log('Compressed length:', compactedResult.length);
+        console.log('Compressed result (first 50 chars):', compactedResult.substring(0, 50));
+        console.log('Compression ratio:', (compactedResult.length / btoa(JSON.stringify(sessionDescription)).length * 100).toFixed(1) + '%');
+        
+        // URL encode the compressed result to handle special characters
+        const urlEncodedResult = encodeURIComponent(compactedResult);
+        console.log('URL encoded length:', urlEncodedResult.length);
+        console.log('URL encoded result (first 50 chars):', urlEncodedResult.substring(0, 50));
+        
+        return urlEncodedResult;
+    } catch (error) {
+        console.error('SDP compression FAILED:', error);
+        console.error('Error details:', error instanceof Error ? error.message : String(error));
+        // Fallback to original method if compression fails
+        const fallback = btoa(JSON.stringify(sessionDescription));
+        console.log('Using fallback encoding, length:', fallback.length);
+        return fallback;
+    }
+};
+
+const decodeSDP = (encodedData: string): RTCSessionDescription => {
+    console.log('decodeSDP called with data length:', encodedData.length);
+    console.log('Data starts with:', encodedData.substring(0, 20));
+    
+    // Heuristic: if data doesn't start with 'eyJ' (base64 of '{"type"'), it's likely compressed
+    // Uncompressed data always starts with 'eyJ' because JSON starts with '{"type"'
+    // URL-encoded data might start with '%' or other encoded characters
+    const looksCompressed = !encodedData.startsWith('eyJ');
+    
+    if (looksCompressed) {
+        console.log('Data appears to be compressed, attempting decompression...');
+        try {
+            // URL decode first to handle special characters
+            const urlDecodedData = decodeURIComponent(encodedData);
+            console.log('URL decoded length:', urlDecodedData.length);
+            console.log('URL decoded data (first 50 chars):', urlDecodedData.substring(0, 50));
+            
+            // Use the same conservative options as compression
+            const options = { 
+                compress: true,
+                mediaOptions: {
+                    replaceCandidateString: false,
+                    replaceMediaString: false,
+                    removeMediaID: false,
+                    removeSetup: false,
+                    forceTrickle: false,
+                    compressFingerprint: true,
+                    compressConnection: false
+                }
+            };
+            const decompactedResult = decompact(urlDecodedData, options);
+            console.log('Decompression successful:', decompactedResult);
+            return new RTCSessionDescription(decompactedResult);
+        } catch (decompressError) {
+            console.error('Decompression failed:', decompressError);
+            throw new Error('Failed to decompress SDP data: ' + (decompressError instanceof Error ? decompressError.message : String(decompressError)));
+        }
+    } else {
+        console.log('Data appears to be uncompressed base64 JSON, attempting to parse...');
+        try {
+            const data = JSON.parse(atob(encodedData));
+            console.log('Successfully parsed uncompressed data:', data.type);
+            return new RTCSessionDescription(data);
+        } catch (parseError) {
+            console.error('Failed to parse as base64 JSON:', parseError);
+            // Last resort: try decompression anyway
+            try {
+                console.log('Trying decompression as last resort...');
+                const options = { 
+                    compress: true,
+                    mediaOptions: {
+                        replaceCandidateString: false,
+                        replaceMediaString: false,
+                        removeMediaID: false,
+                        removeSetup: false,
+                        forceTrickle: false,
+                        compressFingerprint: true,
+                        compressConnection: false
+                    }
+                };
+                const decompactedResult = decompact(encodedData, options);
+                console.log('Last resort decompression successful:', decompactedResult);
+                return new RTCSessionDescription(decompactedResult);
+            } catch (lastError) {
+                console.error('All decoding methods failed:', lastError);
+                throw new Error('Invalid SDP data - could not decode as compressed or uncompressed');
+            }
+        }
+    }
 };
 
 const showToast = (message: string) => {
@@ -117,7 +248,7 @@ const createInvitation = async () => {
 
         const finalOffer = peerConnection.localDescription;
         if (finalOffer) {
-            const encodedOffer = btoa(JSON.stringify(finalOffer));
+            const encodedOffer = encodeSDP(finalOffer);
             const currentLocale = (window as any).ZeroCallI18n?.getCurrentLocale() || 'en';
             const inviteUrl = `${window.location.origin}${window.location.pathname}?invite=${encodedOffer}&lang=${currentLocale}`;
 
@@ -145,7 +276,7 @@ const acceptInvitation = async (encodedOffer: string) => {
         await startLocalVideo();
 
         try {
-            const offer = JSON.parse(atob(encodedOffer));
+            const offer = decodeSDP(encodedOffer);
             peerConnection = new RTCPeerConnection(configuration);
 
             if (localStream) {
@@ -161,7 +292,7 @@ const acceptInvitation = async (encodedOffer: string) => {
                 callActions.style.display = 'flex';
             };
 
-            await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+            await peerConnection.setRemoteDescription(offer);
 
             const answer = await peerConnection.createAnswer();
             await peerConnection.setLocalDescription(answer);
@@ -188,7 +319,7 @@ const acceptInvitation = async (encodedOffer: string) => {
 
             const finalAnswer = peerConnection.localDescription;
             if (finalAnswer) {
-                const encodedResponse = btoa(JSON.stringify(finalAnswer));
+                const encodedResponse = encodeSDP(finalAnswer);
 
                 navigator.clipboard.writeText(encodedResponse).then(() => {
                     showToast(t('response_code_copied'));
@@ -256,8 +387,8 @@ const submitResponse = async () => {
     }
 
     try {
-        const response = JSON.parse(atob(responseCode));
-        await peerConnection.setRemoteDescription(new RTCSessionDescription(response));
+        const response = decodeSDP(responseCode);
+        await peerConnection.setRemoteDescription(response);
         
         responseContainer.style.display = 'none';
         callActions.style.display = 'flex';

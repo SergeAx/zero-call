@@ -9,6 +9,7 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^5.12.9"
+    "astro": "^5.12.9",
+    "sdp-compact": "^0.0.6"
   }
 }
