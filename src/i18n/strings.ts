@@ -40,7 +40,7 @@ const STRINGS = {
   
   // Preload all available locales
   async preloadAll(): Promise<void> {
-    const locales = ['en', 'ru-RU', 'zh-CN', 'fa-IR', 'ko-KP'];
+    const locales = ['en', 'ru-RU', 'zh-CN', 'fa-IR', 'ko-KP', 'fr'];
     await Promise.all(locales.map(locale => this.load(locale)));
   }
 };

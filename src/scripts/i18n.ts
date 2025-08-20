@@ -6,7 +6,7 @@
 
 import STRINGS from "../i18n/strings.ts";
 
-type Locale = "en" | "ru-RU" | "zh-CN" | "fa-IR" | "ko-KP";
+type Locale = "en" | "ru-RU" | "zh-CN" | "fa-IR" | "ko-KP" | "fr";
 
 export type SupportedLocale = {
   code: Locale;
@@ -21,6 +21,12 @@ const SUPPORTED: SupportedLocale[] = [
     label: "English",
     dir: "ltr",
     matchers: ["en", "en-US", "en-GB", "en-*"],
+  },
+  {
+    code: "fr",
+    label: "Français",
+    dir: "ltr",
+    matchers: ["fr", "fr-FR", "fr-*"],
   },
   {
     code: "ru-RU",

@@ -10,6 +10,7 @@ This directory contains the internationalization files for the Zero Call WebRTC 
 ## Supported Locales
 
 - `en` - English (default)
+- `fr` - French
 - `ru-RU` - Russian (Russia)
 - `zh-CN` - Chinese (Simplified, China)
 - `fa-IR` - Persian (Iran) - RTL support
@@ -20,6 +21,7 @@ This directory contains the internationalization files for the Zero Call WebRTC 
 Each locale has its own JSON file following the pattern `strings.{locale}.json`:
 
 - `strings.en.json` - English translations
+- `strings.fr.json` - French translations
 - `strings.ru-RU.json` - Russian translations
 - `strings.zh-CN.json` - Chinese translations
 - `strings.fa-IR.json` - Persian translations
