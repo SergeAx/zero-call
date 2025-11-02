@@ -208,3 +208,27 @@ input[type="text"] {
     color: #fff;
 }
 
+.github-link {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 3000;
+    color: #fff;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid #333;
+    border-radius: 999px;
+    padding: 6px 10px;
+    text-decoration: none;
+    backdrop-filter: blur(4px);
+}
+
+.github-link:hover {
+    background: rgba(255,255,255,0.08);
+}
+
+.github-link svg {
+    display: block;
+}
