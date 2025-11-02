@@ -211,6 +211,13 @@ const showError = (message: string) => {
 const createInvitation = async () => {
     try {
         createInviteBtn.disabled = true;
+
+        if (!localStream || localStream.getTracks().length === 0) {
+            showError(t('camera_permission_denied'));
+            createInviteBtn.disabled = false;
+            return;
+        }
+
         peerConnection = new RTCPeerConnection(configuration);
 
         if (localStream) {
@@ -265,6 +272,9 @@ const createInvitation = async () => {
     } catch (error) {
         console.error(error);
         showError(t('failed_to_create_invitation'));
+    } finally {
+        // Re-enable in case of early returns or errors
+        createInviteBtn.disabled = false;
     }
 };
 
@@ -273,7 +283,8 @@ const acceptInvitation = async (encodedOffer: string) => {
     acceptInviteBtn.style.display = 'block';
 
     acceptInviteBtn.onclick = async () => {
-        await startLocalVideo();
+        const ok = await startLocalVideo();
+        if (!ok) return;
 
         try {
             const offer = decodeSDP(encodedOffer);
@@ -341,15 +352,17 @@ const acceptInvitation = async (encodedOffer: string) => {
     };
 };
 
-const startLocalVideo = async () => {
+const startLocalVideo = async (): Promise<boolean> => {
     try {
         localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
         localVideo.srcObject = localStream;
         callActions.style.display = 'flex';
         setupSpeakingIndicator(localStream);
+        return true;
     } catch (error) {
         console.error('Error accessing media devices:', error);
         showError(t('camera_permission_denied'));
+        return false;
     }
 };
 
@@ -438,7 +451,8 @@ const init = async () => {
     
     // Set up event listeners
     createInviteBtn.addEventListener('click', async () => {
-        await startLocalVideo();
+        const ok = await startLocalVideo();
+        if (!ok) return;
         await createInvitation();
     });
     
