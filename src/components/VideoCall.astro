@@ -381,9 +381,9 @@ const setupSpeakingIndicator = (stream: MediaStream) => {
         const average = dataArray.reduce((sum, value) => sum + value, 0) / bufferLength;
         
         if (average > 20) {
-            localVideo.style.border = '3px solid #00ff00';
+            localVideo.style.borderColor = '#00ff00';
         } else {
-            localVideo.style.border = '1px solid #333';
+            localVideo.style.borderColor = '#333';
         }
         
         requestAnimationFrame(checkAudioLevel);
